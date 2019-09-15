@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,10 +27,7 @@ import java.util.stream.Collectors;
 public class XmlResponseParser implements ResponseParser {
 
     @Override
-    public String getValueFrom(String response, String node) {
-
-        String value = "";
-
+    public Optional<String> getValueFrom(String response, String node) {
         try {
 
             final InputStream is = new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
@@ -41,13 +39,15 @@ public class XmlResponseParser implements ResponseParser {
             final XPath xPath = new DOMXPath(node);
             final List list = xPath.selectNodes(doc);
 
-            value = (String) list.stream()
-                    .map(n -> ((DeferredElementImpl) n).getFirstChild().getNodeValue())
-                    .collect(Collectors.joining(","));
-
+            return Optional
+                    .ofNullable(
+                            (String) list
+                                    .stream()
+                                    .map(n -> ((DeferredElementImpl) n).getFirstChild().getNodeValue())
+                                    .collect(Collectors.joining(",")));
         } catch (ParserConfigurationException | SAXException | IOException | JaxenException e) {
             log.error(e.getMessage());
+            return Optional.empty();
         }
-        return value;
     }
 }

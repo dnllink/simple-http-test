@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @Component("JSON")
@@ -16,16 +17,15 @@ public class JsonResponseParser implements ResponseParser {
     private final ObjectMapper mapper;
 
     @Override
-    public String getValueFrom(String response, String node) {
+    public Optional<String> getValueFrom(String response, String node) {
         //TODO pega apenas valores na raiz do json
-        String value = "";
         try {
             final JsonNode jsonNode = mapper.readTree(response);
-            value = jsonNode.get(node).asText();
+            return Optional.ofNullable(jsonNode.get(node).asText());
         } catch (IOException e) {
             //TODO improve error handling
             log.error(e.getMessage());
+            return Optional.empty();
         }
-        return value;
     }
 }

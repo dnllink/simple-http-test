@@ -1,5 +1,7 @@
 package br.com.obonaldo.simplehttptest.gateways.parsers;
 
+import java.util.Optional;
+
 public interface ResponseParser {
-    String getValueFrom(String response, String node);
+    Optional<String> getValueFrom(String response, String node);
 }

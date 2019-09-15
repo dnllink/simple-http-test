@@ -47,10 +47,10 @@ public class HttpGateway {
         retries.keySet()
                 .forEach(key -> {
                     final String expectedValue = retries.get(key);
-                    final String actualValue = parsers.get(responseType).getValueFrom(response, key);
-                    if (!expectedValue.equals(actualValue)) {
+                    final String actualValue = parsers.get(responseType).getValueFrom(response, key)
+                            .orElseThrow(() -> new IllegalArgumentException(format("Expected value not found for node: [%s] [Expected]: [%s]", key, expectedValue)));
+                    if (!expectedValue.equals(actualValue))
                         throw new IllegalArgumentException(format("Unexpected value found for node: [%s] [Expected]: [%s] [Actual]: [%s]", key, expectedValue, actualValue));
-                    }
                 });
 
         return response;

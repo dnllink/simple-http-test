@@ -29,7 +29,7 @@ public class VariablesParser {
     }
 
     private void addVariable(String response, Map<String, String> responseVariables, String responseType, String key, String value) {
-        final String foundValue = parsers.get(responseType).getValueFrom(response, key);
-        responseVariables.put("@".concat(value), foundValue);
+        parsers.get(responseType).getValueFrom(response, key)
+                .ifPresent(foundValue -> responseVariables.put("@".concat(value), foundValue));
     }
 }
