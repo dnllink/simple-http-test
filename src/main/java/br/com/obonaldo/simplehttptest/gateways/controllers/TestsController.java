@@ -46,7 +46,10 @@ public class TestsController {
                     response = httpGateway.executeRequest(testStep);
                 }
 
-                variables.putAll(variablesParser.mapResponseVariables(testStep, response));
+                final Map<String, String> mappedVariables = variablesParser.mapResponseVariables(testStep, response);
+
+                stepResult.setVariables(mappedVariables);
+                variables.putAll(mappedVariables);
 
                 if (testStep.hasAsserts()) {
                     testStep.getResponse()
